@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+    <title>Google SignIn</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body        { padding-top:70px; }
+    </style>
+</head>
+<body>
+    <div class="row">
+        <div class="container col-4" >
+            <div class="jumbotron text-center text-info">
+                <h1 class="display-4">Hello!</h1>
+                <!-- <p><%- JSON.stringify(data) %></p> -->
+            </div>
+        </div>
+    </div>
+    <div class="container col-8">
+        <ul class="text-info  text-center">
+            <% for(var i=0; i< data.length; i++){ %>
+                <div>
+                    <kbd><%-  Object.keys(data[i]) %> : <%-  data[i][Object.keys(data[i])] %></kbd>
+                    <a href="allow?userId=<%-  Object.keys(data[i]) %>" class="btn btn-danger"><span class="fa fa-google"></span> Allow</a>
+                </div>
+            <% } %>
+        </ul>
+    </div>   
+</body>
+<script>
+    var test = '<%- JSON.stringify(data) %>';
+    console.log(Object.keys(test).length)
+</script>
+</html> 

@@ -3,8 +3,12 @@ const passport = require("passport");
 const router = express.Router();
 
 router.get('/',function(req,res){
-    res.render("login")
+    res.render("vue")
 });
+
+router.get('/googleSignUp',passport.authenticate('google', { failureRedirect: '/error' }),function(req,res){
+    res.redirect('/');
+})
 
 router.get("/auth/google/callback",
     passport.authenticate('google', { failureRedirect: '/error' }),
@@ -38,8 +42,8 @@ router.get("/googleApi",passport.authenticate("googleApi",{
     ]
 }));
 
-router.get("/error",function(req,res){
-  res.send('error')
+router.get("/error",function(req,res,){
+  res.render('vue')
 })
 
 module.exports = router;

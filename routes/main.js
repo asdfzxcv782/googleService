@@ -5,10 +5,19 @@ const oauth2Client = new google.auth.OAuth2()
 const refresh = require('passport-oauth2-refresh')
 const Db = require("../lib/firestore.js");
 
-router.get('/',function(req,res){
-    res.render('main',{'name':req.user.name})
+router.get('/',async function(req,res){
+    if(req.user.NeedPermission){
+        await req.logOut()
+        res.redirect("/login/error")
+    }else{
+        res.render('vue',{'name':req.user.name,'Authority':req.user.Authority})
+    }
     //res.send(req.user);
 });
+
+router.get('/admin',(req,res)=>{
+    console.log(req.user)
+})
 
 router.get('/getDriver',async (req,res)=>{
     let token = await Db.collection("googleUsers").doc(req.user.sub).get();
@@ -28,8 +37,11 @@ router.get('/getDriver',async (req,res)=>{
                 console.log(err.code);
                 let refreshToken = await Db.collection("googleUsers").doc(req.user.sub).get();
                 refresh.requestNewAccessToken('googleApi', await refreshToken.data().DriverRefreshToken, async function(err, accessToken) {
+                    console.log(err)
                     console.log(accessToken)
-                    if(err || !accessToken) { return send401Response(); }
+                    if(err || !accessToken) { 
+                        res.redirect('login/googleApi') //Update refresh token
+                    }
                     let docRef = Db.collection("googleUsers").doc(req.user.sub)
                     await docRef.update({DriverAccessToken:accessToken})
                     oauth2Client.setCredentials({

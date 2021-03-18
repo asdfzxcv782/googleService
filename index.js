@@ -3,11 +3,14 @@ const bodyParser = require('body-parser')
 const express = require('express')
 const session = require('express-session');
 const Login = require('./routes/login.js');
+const Admin = require('./routes/admin.js');
 const main = require('./routes/main.js');
 const Logout = require('./routes/logout.js')
 const app = express();
 
 
+app.use('/static', express.static(__dirname + '/views')); // 要在passport前面才不會請求deserializeUser多次
+app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(session({
   secret : 'secret', // 對session id 相關的cookie 進行簽名
@@ -24,6 +27,15 @@ function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next() }
   // 若使用者尚未通過驗證，則將使用者導向登入頁面
   res.redirect('/login')
+}
+
+function AuthorityCheck(req, res, next){
+  console.log(req.user.Authority)
+  if(req.user.Authority == 7){
+    return next()
+  }else{
+    res.render('vue')
+  }
 }
 
 app.use(passport.initialize())
@@ -43,11 +55,9 @@ app.use(function(err, req, res, next) {  //error handle must after passport midd
 });
 
 require('./lib/passport')(passport)
-
-app.set('view engine', 'ejs');
-
 app.use('/login', Login);
 app.use('/logout',ensureAuthenticated,Logout)
+app.use('/admin',ensureAuthenticated,AuthorityCheck,Admin)
 app.use('/',ensureAuthenticated,main)
 
 const port = process.env.port || 8000
