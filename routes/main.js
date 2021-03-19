@@ -6,14 +6,14 @@ const refresh = require('passport-oauth2-refresh')
 const Db = require("../lib/firestore.js");
 
 router.get('/',async function(req,res){
-    if(req.user.NeedPermission){
-        await req.logOut()
-        res.redirect("/login/error")
-    }else{
-        res.render('vue',{'name':req.user.name,'Authority':req.user.Authority})
-    }
+    
+    res.render('vue')
     //res.send(req.user);
 });
+
+router.get('/userInfo',async function(req,res){
+    res.send(req.user);
+})
 
 router.get('/admin',(req,res)=>{
     console.log(req.user)

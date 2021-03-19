@@ -29,6 +29,10 @@ function ensureAuthenticated(req, res, next) {
   res.redirect('/login')
 }
 
+function redirectUnmatched(req, res) {
+  res.redirect("/login/error");
+}
+
 function AuthorityCheck(req, res, next){
   console.log(req.user.Authority)
   if(req.user.Authority == 7){
@@ -53,12 +57,12 @@ app.use(function(err, req, res, next) {  //error handle must after passport midd
       next();
   }
 });
-
 require('./lib/passport')(passport)
 app.use('/login', Login);
 app.use('/logout',ensureAuthenticated,Logout)
 app.use('/admin',ensureAuthenticated,AuthorityCheck,Admin)
 app.use('/',ensureAuthenticated,main)
+app.use(redirectUnmatched); //handle unmatched api 一定要在use其他api的下面
 
 const port = process.env.port || 8000
 app.listen(port, () => console.log(`Server running at ${port}`));
