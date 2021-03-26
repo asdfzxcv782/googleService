@@ -13,14 +13,18 @@ router.get('/getRequestMenu',async function(req,res){
             let final = []
             querySnapshot.forEach((doc) => {
                 let result = {}
-                result[doc.id] = doc.data().email
+                result.id = doc.id
+                result.user = doc.data().email
+                result.seen = true
+                //result[doc.id] = doc.data().email
                 final.push(result);
-                console.log(doc.id, " => ", doc.data());
+                console.log(final);
             });
-            res.render('admin',{'data':final});
+            res.send(final)
         })
         .catch((error) => {
             console.log("Error getting documents: ", error);
+            res.send(error);
         });
 })
 
@@ -35,6 +39,8 @@ router.get('/allow',async function(req,res){
             res.send("SomethingWrong: " + error) 
         })
 })
+
+
 
 
 

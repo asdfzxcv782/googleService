@@ -6,8 +6,11 @@ const Login = require('./routes/login.js');
 const Admin = require('./routes/admin.js');
 const main = require('./routes/main.js');
 const Logout = require('./routes/logout.js')
+const cors = require('cors');
 const app = express();
 
+app.use(cors())
+app.options('http://localhost:8080',cors)
 
 app.use('/static', express.static(__dirname + '/views')); // 要在passport前面才不會請求deserializeUser多次
 app.set('view engine', 'ejs');
@@ -26,7 +29,7 @@ function ensureAuthenticated(req, res, next) {
   console.log(req.isAuthenticated())
   if (req.isAuthenticated()) { return next() }
   // 若使用者尚未通過驗證，則將使用者導向登入頁面
-  res.redirect('/login')
+  res.redirect("/login")
 }
 
 function redirectUnmatched(req, res) {
@@ -34,11 +37,14 @@ function redirectUnmatched(req, res) {
 }
 
 function AuthorityCheck(req, res, next){
-  console.log(req.user.Authority)
-  if(req.user.Authority == 7){
+  //console.log(req.user.Authority)
+  if(req.user == undefined){
+    res.status(403).send('NeedLogin')
+  }
+  else if(req.user.Authority == 7){
     return next()
   }else{
-    res.render('vue')
+    res.status(403).send('PermissionDined')
   }
 }
 
@@ -60,7 +66,7 @@ app.use(function(err, req, res, next) {  //error handle must after passport midd
 require('./lib/passport')(passport)
 app.use('/login', Login);
 app.use('/logout',ensureAuthenticated,Logout)
-app.use('/admin',ensureAuthenticated,AuthorityCheck,Admin)
+app.use('/admin',AuthorityCheck,ensureAuthenticated,Admin)
 app.use('/',ensureAuthenticated,main)
 app.use(redirectUnmatched); //handle unmatched api 一定要在use其他api的下面
 

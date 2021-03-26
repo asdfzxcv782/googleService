@@ -12,7 +12,15 @@ router.get('/',async function(req,res){
 });
 
 router.get('/userInfo',async function(req,res){
-    res.send(req.user);
+    if (req.user.NeedPermission == true){
+        console.log(req.user);
+        let user = req.user
+        await req.logOut();
+        res.send(user);
+    }else{
+        res.send(req.user);
+    }
+    
 })
 
 router.get('/admin',(req,res)=>{
@@ -39,8 +47,9 @@ router.get('/getDriver',async (req,res)=>{
                 refresh.requestNewAccessToken('googleApi', await refreshToken.data().DriverRefreshToken, async function(err, accessToken) {
                     console.log(err)
                     console.log(accessToken)
-                    if(err || !accessToken) { 
-                        res.redirect('login/googleApi') //Update refresh token
+                    if(err || !accessToken) {
+                        res.status(403).send("refreshToken Error")
+                        //res.redirect('login/googleApi')
                     }
                     let docRef = Db.collection("googleUsers").doc(req.user.sub)
                     await docRef.update({DriverAccessToken:accessToken})
