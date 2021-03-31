@@ -75,5 +75,5 @@ app.use('/admin',AuthorityCheck,ensureAuthenticated,Admin)
 app.use('/',ensureAuthenticated,main)
 app.use(redirectUnmatched); //handle unmatched api 一定要在use其他api的下面
 
-const port = process.env.port || 8000
+const port = process.env.port || 8010
 app.listen(port, () => console.log(`Server running at ${port}`));
