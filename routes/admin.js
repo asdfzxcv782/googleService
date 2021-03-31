@@ -8,7 +8,7 @@ router.get('/', async function(req, res) {
 
 router.get('/getRequestMenu',async function(req,res){
     let Users = Db.collection("googleUsers")
-    Users.where('NeedPermission', '==', true).get()
+    Users.where('Authority', '==', 1).get()
         .then((querySnapshot) => {
             let final = []
             querySnapshot.forEach((doc) => {
@@ -31,7 +31,7 @@ router.get('/getRequestMenu',async function(req,res){
 router.get('/allow',async function(req,res){
     console.log(req.query.userId)
     let docRef = Db.collection("googleUsers").doc(req.query.userId);
-    await docRef.update({NeedPermission:false})
+    await docRef.update({Authority:2})
         .then(() => {
             res.send("Complete")
         })

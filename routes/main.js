@@ -12,18 +12,23 @@ router.get('/',async function(req,res){
 });
 
 router.get('/userInfo',async function(req,res){
-    if (req.user.NeedPermission == true){
-        console.log(req.user);
-        let user = req.user
-        await req.logOut();
-        res.send(user);
+    if (req.user.Authority == 1){
+        res.status(403).send("");
     }else{
-        res.send(req.user);
+        let user = {
+            Authority: req.user.Authority,
+            locale: req.user.locale,
+            sub: req.user.sub,
+            picture: req.user.picture,
+            email: req.user.email,
+            name: req.user.name
+        }
+        res.send(user);
     }
     
 })
 
-router.get('/admin',(req,res)=>{
+router.get('/InvalidCache',(req,res)=>{
     console.log(req.user)
 })
 
@@ -48,7 +53,7 @@ router.get('/getDriver',async (req,res)=>{
                     console.log(err)
                     console.log(accessToken)
                     if(err || !accessToken) {
-                        res.status(403).send("refreshToken Error")
+                        res.status(404).send("refreshToken Error")
                         //res.redirect('login/googleApi')
                     }
                     let docRef = Db.collection("googleUsers").doc(req.user.sub)

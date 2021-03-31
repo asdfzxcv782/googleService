@@ -26,10 +26,15 @@ app.use(session({
 
 function ensureAuthenticated(req, res, next) {
   // 若使用者已通過驗證，則觸發 next()
-  console.log(req.isAuthenticated())
+  console.log(req.originalUrl + " " +req.isAuthenticated())
   if (req.isAuthenticated()) { return next() }
   // 若使用者尚未通過驗證，則將使用者導向登入頁面
-  res.redirect("/login")
+  //res.status(403).send('PermissionDined')
+  if(req.originalUrl !== "/"){
+    res.status(403).send('NeedLogin')
+  }else{
+    res.redirect("/login")
+  }
 }
 
 function redirectUnmatched(req, res) {
@@ -57,7 +62,7 @@ app.use(function(err, req, res, next) {  //error handle must after passport midd
       if (req.originalUrl == "/login") {
           next(); // never redirect login page to itself
       } else {
-          res.redirect("/login/error");
+          res.redirect("/login/error")
       }
   } else {
       next();
