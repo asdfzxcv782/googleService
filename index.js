@@ -75,5 +75,10 @@ app.use('/admin',AuthorityCheck,ensureAuthenticated,Admin)
 app.use('/',ensureAuthenticated,main)
 app.use(redirectUnmatched); //handle unmatched api 一定要在use其他api的下面
 
-const port = process.env.port || 7070
-app.listen(port, () => console.log(`Server running at ${port}`));
+console.log(process.env.NODE_ENV)
+/*if(process.env.NODE_ENV = "development"){
+  var port = process.env.port || 8000
+}else{
+  var port = process.env.port || 7070
+}*/
+app.listen(process.env.PORT, () => console.log(`Server running at ${process.env.PORT}`));
