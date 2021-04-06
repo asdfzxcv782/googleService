@@ -6,9 +6,7 @@ const refresh = require('passport-oauth2-refresh')
 const Db = require("../lib/firestore.js");
 
 router.get('/',async function(req,res){
-    
     res.render('vue')
-    //res.send(req.user);
 });
 
 router.get('/userInfo',async function(req,res){

@@ -9,8 +9,12 @@ const Logout = require('./routes/logout.js')
 const cors = require('cors');
 const app = express();
 
-app.use(cors())
-app.options('http://localhost:8080',cors)
+app.use(cors({
+  origin: process.env.CorsOrigin,
+  credentials: process.env.CorsCredentials
+})
+
+)
 
 app.use('/static', express.static(__dirname + '/views')); // 要在passport前面才不會請求deserializeUser多次
 app.set('view engine', 'ejs');
@@ -76,9 +80,4 @@ app.use('/',ensureAuthenticated,main)
 app.use(redirectUnmatched); //handle unmatched api 一定要在use其他api的下面
 
 console.log(process.env.NODE_ENV)
-/*if(process.env.NODE_ENV = "development"){
-  var port = process.env.port || 8000
-}else{
-  var port = process.env.port || 7070
-}*/
 app.listen(process.env.PORT, () => console.log(`Server running at ${process.env.PORT}`));
