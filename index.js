@@ -7,24 +7,24 @@ const Admin = require('./routes/admin.js');
 const main = require('./routes/main.js');
 const Logout = require('./routes/logout.js')
 const cors = require('cors');
+const envConfig = require('./config/envConfig.json')
 const app = express();
 
-app.use(cors({
-  origin: process.env.CorsOrigin,
-  credentials: process.env.CorsCredentials
-})
-
-)
+app.use(cors({ //get config by env
+  origin: envConfig[process.env.NODE_ENV].Cors.origin,
+  credentials: envConfig[process.env.NODE_ENV].Cors.credentials
+}))
 
 app.use('/static', express.static(__dirname + '/views')); // 要在passport前面才不會請求deserializeUser多次
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 app.use(session({
   secret : 'secret', // 對session id 相關的cookie 進行簽名
   resave : true,
   saveUninitialized: false, // 是否儲存未初始化的會話
   cookie : {
-  maxAge : 1000 * 60, // 設定 session 的有效時間，單位毫秒
+  maxAge : 1000 * 6000, // 設定 session 的有效時間，單位毫秒
   },
 }));
 

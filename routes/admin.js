@@ -2,20 +2,17 @@ const express = require('express');
 const router = express.Router();
 const Db = require("../lib/firestore.js");
 
-router.get('/', async function(req, res) {
-    res.render('admin',{'name':req.user.name})
-});
-
 router.get('/getRequestMenu',async function(req,res){
     let Users = Db.collection("googleUsers")
-    Users.where('Authority', '==', 1).get()
+    Users.get()
         .then((querySnapshot) => {
             let final = []
             querySnapshot.forEach((doc) => {
                 let result = {}
                 result.id = doc.id
                 result.user = doc.data().email
-                result.seen = true
+                result.authority = doc.data().Authority
+                //result.seen = true
                 //result[doc.id] = doc.data().email
                 final.push(result);
                 console.log(final);
@@ -24,19 +21,19 @@ router.get('/getRequestMenu',async function(req,res){
         })
         .catch((error) => {
             console.log("Error getting documents: ", error);
-            res.send(error);
+            res.status(400).send(error);
         });
 })
 
-router.get('/allow',async function(req,res){
-    console.log(req.query.userId)
-    let docRef = Db.collection("googleUsers").doc(req.query.userId);
-    await docRef.update({Authority:2})
+router.post('/allow',async function(req,res){
+    console.log(req.body)
+    let docRef = Db.collection("googleUsers").doc(req.body.userId);
+    await docRef.update({Authority:req.body.authority})
         .then(() => {
-            res.send("Complete")
+            res.send(`Change ${req.body.userId} authority to ${req.body.authority} complete!`)
         })
         .catch((error) => {
-            res.send("SomethingWrong: " + error) 
+            res.status(400).send(error) 
         })
 })
 
