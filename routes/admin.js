@@ -20,8 +20,10 @@ router.get('/getRequestMenu',async function(req,res){
             res.send(final)
         })
         .catch((error) => {
-            console.log("Error getting documents: ", error);
-            res.status(400).send(error);
+            res.send({
+                Syscode:400,
+                Message:error
+            })
         });
 })
 
@@ -33,7 +35,10 @@ router.post('/allow',async function(req,res){
             res.send(`Change ${req.body.userId} authority to ${req.body.authority} complete!`)
         })
         .catch((error) => {
-            res.status(400).send(error) 
+            res.send({
+                Syscode:400,
+                Message:error
+            })
         })
 })
 

@@ -4,6 +4,7 @@ const { google } = require('googleapis');
 const oauth2Client = new google.auth.OAuth2()
 const refresh = require('passport-oauth2-refresh')
 const Db = require("../lib/firestore.js");
+const syscode = require("../lib/syscode.json")
 
 router.get('/',async function(req,res){
     res.render('vue')
@@ -11,7 +12,11 @@ router.get('/',async function(req,res){
 
 router.get('/userInfo',async function(req,res){
     if (req.user.Authority == 1){
-        res.status(403).send("");
+        res.send({
+            Syscode:403,
+            Message:syscode[403]
+        })
+        //res.status(403).send("need");
     }else{
         let user = {
             Authority: req.user.Authority,
@@ -32,6 +37,10 @@ router.get('/InvalidCache',(req,res)=>{
 
 router.get('/getDriver',async (req,res)=>{
     let token = await Db.collection("googleUsers").doc(req.user.sub).get();
+    if(!token.data().DriverAccessToken){
+        res.redirect('login/googleApi')
+        return ""
+    }
     oauth2Client.setCredentials({
         'access_token': token.data().DriverAccessToken
     });
@@ -51,8 +60,11 @@ router.get('/getDriver',async (req,res)=>{
                     console.log(err)
                     console.log(accessToken)
                     if(err || !accessToken) {
-                        res.status(404).send("refreshToken Error")
-                        //res.redirect('login/googleApi')
+                        /*res.send({
+                            Syscode:404,
+                            Message:"refreshToken Error"
+                        })*/
+                        res.redirect('login/googleApi')
                     }
                     let docRef = Db.collection("googleUsers").doc(req.user.sub)
                     await docRef.update({DriverAccessToken:accessToken})
