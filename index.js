@@ -35,7 +35,10 @@ function ensureAuthenticated(req, res, next) {
   // 若使用者尚未通過驗證，則將使用者導向登入頁面
   //res.status(403).send('PermissionDined')
   if(req.originalUrl !== "/"){
-    res.status(403).send('NeedLogin')
+    res.send({
+      Syscode:403,
+      Message: "NeedLogin"
+    })
   }else{
     res.redirect("/login")
   }
@@ -48,12 +51,18 @@ function redirectUnmatched(req, res) {
 function AuthorityCheck(req, res, next){
   //console.log(req.user.Authority)
   if(req.user == undefined){
-    res.status(403).send('NeedLogin')
+    res.send({
+      Syscode:403,
+      Message: "NeedLogin"
+    })
   }
   else if(req.user.Authority == 7){
     return next()
   }else{
-    res.status(403).send('PermissionDined')
+    res.send({
+      Syscode:403,
+      Message: "PermissionDined"
+    })
   }
 }
 

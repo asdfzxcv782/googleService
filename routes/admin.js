@@ -12,12 +12,13 @@ router.get('/getRequestMenu',async function(req,res){
                 result.id = doc.id
                 result.user = doc.data().email
                 result.authority = doc.data().Authority
-                //result.seen = true
-                //result[doc.id] = doc.data().email
                 final.push(result);
                 console.log(final);
             });
-            res.send(final)
+            res.send({
+                Syscode:200,
+                Data:final
+            })
         })
         .catch((error) => {
             res.send({
@@ -32,7 +33,10 @@ router.post('/allow',async function(req,res){
     let docRef = Db.collection("googleUsers").doc(req.body.userId);
     await docRef.update({Authority:req.body.authority})
         .then(() => {
-            res.send(`Change ${req.body.userId} authority to ${req.body.authority} complete!`)
+            res.send({
+                Syscode:200,
+                Message: `Change ${req.body.userId} authority to ${req.body.authority} complete!`
+            })
         })
         .catch((error) => {
             res.send({
