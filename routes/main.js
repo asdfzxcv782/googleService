@@ -16,7 +16,6 @@ router.get('/userInfo',async function(req,res){
             Syscode:403,
             Message:syscode[403]
         })
-        //res.status(403).send("need");
     }else{
         let user = {
             Authority: req.user.Authority,
@@ -26,7 +25,10 @@ router.get('/userInfo',async function(req,res){
             email: req.user.email,
             name: req.user.name
         }
-        res.send(user);
+        res.send({
+            Syscode:200,
+            User:user
+        });
     }
     
 })
