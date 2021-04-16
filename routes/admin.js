@@ -3,8 +3,14 @@ const router = express.Router();
 const Db = require("../lib/firestore.js");
 
 router.get('/getRequestMenu',async function(req,res){
+    if(!req.query.createdAt){
+        var startAfterLocate = 0
+    }else{
+        var startAfterLocate = Number(req.query.createdAt)
+    }
+    console.log(startAfterLocate)
     let Users = Db.collection("googleUsers")
-    Users.get()
+    Users.orderBy('createdAt').limit(2).startAfter(startAfterLocate).get()
         .then((querySnapshot) => {
             let final = []
             querySnapshot.forEach((doc) => {
@@ -12,6 +18,7 @@ router.get('/getRequestMenu',async function(req,res){
                 result.id = doc.id
                 result.user = doc.data().email
                 result.authority = doc.data().Authority
+                result.createdAt = doc.data().createdAt
                 final.push(result);
                 console.log(final);
             });
