@@ -10,6 +10,11 @@ router.get('/',async function(req,res){
     res.render('vue')
 });
 
+router.get('/main',async function(req,res){
+    res.render('vue')
+});
+
+
 router.get('/userInfo',async function(req,res){
     if (req.user.Authority == 1){
         res.send({
