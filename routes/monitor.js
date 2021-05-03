@@ -3,7 +3,19 @@ const router = express.Router()
 const Db = require('../lib/firestore.js')
 
 router.get('/', function (req, res) {
-  res.send("hello")
+  const status = Db.collection("serverStatus")
+  status.get()
+    .then((querySnapshot) => {
+      let data = []
+      querySnapshot.forEach((doc) => {
+        let result = doc.data()
+        data.push(result)
+      })
+      return data
+    })
+    .then((data) =>{
+      res.send(data)
+    })
 })
 
 router.post('/',function(req, res){
