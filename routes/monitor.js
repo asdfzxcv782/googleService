@@ -9,7 +9,12 @@ router.get('/', function (req, res) {
       let data = []
       querySnapshot.forEach((doc) => {
         let result = doc.data()
-        data.push(result)
+        let final = {}
+        final.cpuUsage = result.CpuUsage
+        final.memoryFree = result.MemoryFree
+        final.userName = result.userName
+        final.createAt = doc.id
+        data.push(final)
       })
       return data
     })
