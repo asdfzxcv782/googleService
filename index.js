@@ -9,7 +9,7 @@ const Logout = require('./routes/logout.js')
 const Monitor = require('./routes/monitor')
 const cors = require('cors')
 const envConfig = require('./config/envConfig.json')
-const basicAuth = require("./lib/basicauth")
+const basicAuth = require('./lib/basicauth')
 const app = express()
 
 app.use(cors({ // get config by env
@@ -86,7 +86,7 @@ require('./lib/passport')(passport)
 app.use('/login', Login)
 app.use('/logout', ensureAuthenticated, Logout)
 app.use('/admin', AuthorityCheck, ensureAuthenticated, Admin)
-app.use('/monitor',basicAuth, Monitor)
+app.use('/monitor', basicAuth, Monitor)
 app.use('/', ensureAuthenticated, main)
 app.use(redirectUnmatched) // handle unmatched api 一定要在use其他api的下面
 

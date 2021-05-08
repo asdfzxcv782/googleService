@@ -2,7 +2,8 @@ const express = require('express')
 const router = express.Router()
 const Db = require('../lib/firestore.js')
 
-router.get('/:id', function (req, res) {
+router.get('/instance/:id', function (req, res) {
+  console.log(req.params.id)
   const status = Db.collection('Server')
     .doc('Status')
     .collection(req.params.id)
@@ -12,10 +13,11 @@ router.get('/:id', function (req, res) {
       querySnapshot.forEach((doc) => {
         const result = doc.data()
         const final = {}
+        const utc8Date = new Date(Number(doc.id)).toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' })
         final.cpuUsage = result.CpuUsage
         final.memoryFree = result.MemoryFree
         final.userName = result.userName
-        final.createAt = doc.id
+        final.createAt = utc8Date
         data.push(final)
       })
       return data
@@ -25,19 +27,20 @@ router.get('/:id', function (req, res) {
     })
 })
 
-router.get('/instance', async function (req, res) {
+router.get('/instance', function (req, res) {
   const status = Db.collection('Server')
     .doc('Status')
   status.listCollections()
     .then((querySnapshot) => {
-      const data = []
+      const data1 = []
       querySnapshot.forEach((doc) => {
-        data.push(doc.id)
+        console.log(data1)
+        data1.push(doc.id)
       })
-      return data
+      return data1
     })
-    .then((data) => {
-      res.send(data)
+    .then((response) => {
+      res.send(response)
     })
 })
 
