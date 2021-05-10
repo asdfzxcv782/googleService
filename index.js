@@ -13,8 +13,8 @@ const basicAuth = require('./lib/basicauth')
 const app = express()
 
 app.use(cors({ // get config by env
-  origin: envConfig[process.env.NODE_ENV].Cors.origin,
-  credentials: envConfig[process.env.NODE_ENV].Cors.credentials
+  origin: process.env.CorsOrigin,
+  credentials: (process.env.CorsCredentials === 'true') // 傳過來的是string需要轉換
 }))
 
 // eslint-disable-next-line node/no-path-concat

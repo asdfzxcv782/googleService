@@ -7,11 +7,11 @@ const Db = require('../lib/firestore.js')
 const syscode = require('../lib/syscode.json')
 
 router.get('/', function (req, res) {
-  res.render('vue')
+  res.render(process.env.viewFile)
 })
 
 router.get('/main', function (req, res) {
-  res.render('vue')
+  res.render(process.env.viewFile)
 })
 
 router.get('/userInfo', async function (req, res) {
@@ -41,13 +41,13 @@ router.get('/InvalidCache', function (req, res) {
   console.log(req.user)
 })
 
-router.get('/getDriver',async (req,res)=>{
-    let token = await Db.collection("googleUsers").doc(req.user.sub).get();
-    console.log(token.data().DriverAccessToken)
-    /*if(!token.data().DriverAccessToken){
-        res.redirect('login/googleApi')
-        return ""
-    }*/
+router.get('/getDriver', async (req, res) => {
+  const token = await Db.collection('googleUsers').doc(req.user.sub).get()
+  console.log(token.data().DriverAccessToken)
+  if (!token.data().DriverAccessToken) {
+    //res.redirect('login/googleApi')
+    res.sendStatus(404)
+  }
     oauth2Client.setCredentials({
         'access_token': token.data().DriverAccessToken
     });
@@ -67,11 +67,8 @@ router.get('/getDriver',async (req,res)=>{
                     console.log(err)
                     console.log(accessToken)
                     if(err || !accessToken) {
-                        /*res.send({
-                            Syscode:404,
-                            Message:"refreshToken Error"
-                        })*/
-                        res.redirect('login/googleApi')
+                      res.sendStatus(err.code)
+                        //res.redirect('login/googleApi')
                     }
                     let docRef = Db.collection("googleUsers").doc(req.user.sub)
                     await docRef.update({DriverAccessToken:accessToken})

@@ -3,10 +3,11 @@ const router = express.Router()
 const Db = require('../lib/firestore.js')
 
 router.get('/getRequestMenu', async function (req, res) {
+  let startAfterLocate
   if (!req.query.createdAt) {
-    var startAfterLocate = 0
+    startAfterLocate = 0
   } else {
-    var startAfterLocate = Number(req.query.createdAt)
+    startAfterLocate = Number(req.query.createdAt)
   }
   console.log(startAfterLocate)
   const Users = Db.collection('googleUsers')

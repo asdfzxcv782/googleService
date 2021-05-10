@@ -3,7 +3,7 @@ const passport = require('passport')
 const router = express.Router()
 
 router.get('/', function (req, res) {
-  res.render('vue')
+  res.render(process.env.viewFile)
 })
 
 router.get('/googleSignUp',
