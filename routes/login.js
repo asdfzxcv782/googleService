@@ -46,7 +46,7 @@ router.get('/googleApi', passport.authenticate('googleApi', {
 
 router.get('/error',
   function (req, res) {
-    res.render('vue')
+    res.render(process.env.viewFile)
   }
 )
 
